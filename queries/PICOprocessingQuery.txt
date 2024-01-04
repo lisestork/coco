@@ -1,0 +1,35 @@
+PREFIX cc: <http://data.cochrane.org/ontologies/core/>
+PREFIX cp: <http://data.cochrane.org/ontologies/pico/>
+PREFIX ns2: <http://data.cochrane.org/ontologies/annotation/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX p: <http://example.org/>
+
+construct {
+    
+    ?pico cp:intervention ?appliedIntervention ; 
+          cp:intervention ?appliedComparator ;
+          cp:population ?population ;
+          cp:outcome ?outcomeDomain . 
+
+    ?population cp:condition ?condition . 
+
+    ?pico ns2:review ?review  .           
+}
+
+where { 
+    
+    ?anno ns2:referencesConcept ?pico .
+    ?anno ns2:annotationOf ?review . 
+    
+    #returns all picos that have a drug as intervention
+    ?pico cp:interventionGroup/cp:intervention/cp:appliedIntervention ?appliedIntervention .           						     OPTIONAL {?pico cp:comparatorGroup/cp:intervention/cp:appliedIntervention ?appliedComparator .}
+   
+    #retrieve all outcomes 
+    ?pico cp:outcomeGroup/cp:outcome/cp:outcomeDomain ?outcomeDomain.
+
+    #retrieve conditions
+    ?pico cp:population ?population . 
+    ?population cp:condition ?condition . 
+    
+}

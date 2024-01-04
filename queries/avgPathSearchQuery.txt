@@ -1,0 +1,47 @@
+PREFIX path: <http://www.ontotext.com/path#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX cp: <http://data.cochrane.org/ontologies/pico/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ex: <http://example.org/>
+PREFIX : <http://data.cochrane.org/ontologies/core/>
+
+
+SELECT (avg(?maxpath) as ?avg) from onto:explicit WHERE {
+{
+SELECT (max(?intpath) as ?maxpath)  WHERE {
+      
+    BIND(xsd:integer(?path) as ?intpath)
+
+    {
+        SELECT ?src ?dst ?path ?start ?pred ?end WHERE {
+
+    	?pop <http://data.cochrane.org/ontologies/pico/condition> ?src .
+        ?src a ex:Disease . 
+        ?pico <http://data.cochrane.org/ontologies/pico/population> ?pop . 
+    	?pico <http://data.cochrane.org/ontologies/pico/intervention> ?dst .
+            
+            SERVICE <http://www.ontotext.com/path#search> {
+                <urn:path> path:findPath path:allPaths ;
+                           path:bidirectional true;
+                           path:sourceNode ?src ;
+                           path:destinationNode ?dst ;
+                           path:startNode ?start;
+                           path:endNode ?end;
+                           path:minPathLength 2 ;
+                           path:maxPathLength 2 ;
+                           path:resultBindingIndex ?index ;
+                           path:pathIndex ?path ;
+                           path:exportBinding ?pred .
+                    SERVICE <urn:path> {
+                        VALUES ?pred {ex:associates ex:participates ex:downregulates ex:binds ex:associates ex:covaries ex:expresses ex:interacts ex:upregulates ex:includes ex:localizes ex:treats ex:palliates ex:resembles ex:causes ex:presents}
+                    ?start ?pred ?end . 
+                    }  
+            }
+        }
+    }
+} groupby ?src ?dst }
+}
