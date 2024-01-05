@@ -1,6 +1,6 @@
 # Explainable Drug Repurposing in Context via Deep Reinforcement Learning
 
-## Real-world dataset
+### Real-world dataset
 Created by: 
 1. Filtering PICO graph. Using a [SPARQL query](https://github.com/lisestork/coco/blob/master/queries/filteringPICOquery.txt), we extract populations and
 their disease or phenotype entities. In PICO graphs, these are all entities from the Cochrane Linked Data Vocabulary (CLDV) of type condition.
